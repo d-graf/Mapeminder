@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.widget.Toolbar;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -64,9 +65,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onLocationChanged(Location location) {
                 if (myMarker == null) {
                     myMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Marker"));
-
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(),15));
                 } else {
                     myMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(),15));
                 }
             }
 
