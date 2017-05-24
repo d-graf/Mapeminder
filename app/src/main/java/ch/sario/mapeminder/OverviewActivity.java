@@ -35,7 +35,7 @@ public class OverviewActivity extends AppCompatActivity {
         ArrayList<String> output = note.getAllNotes();
 
         for(int i = 0; i < output.size(); i++) {
-            notelist.add(output);
+            notelist.add(output.get(i));
         }
 
         note.closeNote();
