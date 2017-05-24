@@ -41,7 +41,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoadingActivity" />
-        <activity android:name=".AddActivity"></activity>
+        <activity android:name=".AddActivity" />
+        <activity android:name=".OverviewActivity" />
+        <activity android:name=".DetailActivity"></activity>
     </application>
 
 </manifest>
