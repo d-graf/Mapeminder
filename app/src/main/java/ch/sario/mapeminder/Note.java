@@ -49,9 +49,12 @@ public class Note{
                 null                                            // The sort order
         );
 
+
         while(cursor.moveToNext()) {
-            String str = projection[0] + ":" + projection[1];
-            output.add(str);
+            String id = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry._ID));
+            String note = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE));
+
+            output.add(id + ": " + note);
         }
         cursor.close();
 

@@ -14,13 +14,15 @@ import java.util.ArrayList;
 public class OverviewActivity extends AppCompatActivity {
 
     ArrayAdapter notelist;
-    private ListView notes = (ListView) findViewById(R.id.notelist);
+    private ListView notes;
     private Note note = new Note();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
+
+        notes = (ListView) findViewById(R.id.notelist);
 
         addNotesToList();
     }

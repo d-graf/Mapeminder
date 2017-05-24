@@ -115,7 +115,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void clickOverview(){
-        Intent intent = new Intent(getApplicationContext(), AddActivity.class);
+        Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
         startActivity(intent);
     }
 
