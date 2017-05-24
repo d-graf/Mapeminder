@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/link_overview"
-        android:icon="@drawable/ic_map"
-        android:title="Notiz Übersicht"
+        android:icon="@drawable/ic_back"
+        android:title="Zurück zur Karte"
         app:showAsAction="ifRoom" />
 </menu>

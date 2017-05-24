@@ -3,6 +3,8 @@ package ch.sario.mapeminder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +27,25 @@ public class OverviewActivity extends AppCompatActivity {
         notes = (ListView) findViewById(R.id.notelist);
 
         addNotesToList();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu_home) {
+        getMenuInflater().inflate(R.menu.menu_home, menu_home);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        clickMaps();
+        return true;
+    }
+
+    private void clickMaps(){
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     private void addNotesToList(){
