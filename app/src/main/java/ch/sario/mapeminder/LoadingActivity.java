@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.util.Objects;
 import java.util.Timer;
@@ -38,12 +40,11 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
-        if (!isNetworkAvailable()){
-            mDialog = ProgressDialog.show(this, "Keine Internetverbindung / GPS", "Bitte warten...");
+        if (!isLocationEnabled() && !isNetworkAvailable()){
+            mDialog = ProgressDialog.show(this, "Keine Internetverbindung / GPS", "Bitte aktivieren...");
         }else{
             procceedToNextActivity();
         }
-
     }
 
     public void procceedToNextActivity()
@@ -57,5 +58,14 @@ public class LoadingActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    protected boolean isLocationEnabled(){
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if(!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+            return false;
+        } else {
+            return true;
+        }
     }
 }

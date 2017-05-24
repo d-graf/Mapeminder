@@ -20,7 +20,7 @@ public class Note{
 
     }
 
-    public void insertNote(String str, int x, int y){
+    public void insertNote(String str, String x, String y){
 
         ContentValues values = new ContentValues();
         values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE,str);

@@ -108,8 +108,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
-                TextView t = (TextView) findViewById(R.id.koordinatenNotiz);
-                t.setText("x: " + point.longitude + " y: " + point.latitude);
+
+                System.out.println(point.longitude);
+                System.out.println(point.latitude);
+
+                Intent intent = new Intent(getApplicationContext(), AddActivity.class);
+                intent.putExtra("x", Double.toString(point.longitude));
+                intent.putExtra("y", Double.toString(point.latitude));
+                startActivity(intent);
             }
         });
     }
