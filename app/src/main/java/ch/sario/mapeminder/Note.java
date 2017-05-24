@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Note{
 
@@ -53,7 +52,7 @@ public class Note{
             String id = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry._ID));
             String note = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE));
 
-            output.add(id + ". " + note);
+            output.add(id + ": " + note);
         }
         cursor.close();
 
@@ -73,7 +72,7 @@ public class Note{
         String selection = FeedReaderContract.FeedEntry._ID + " = ?";
         String[] selectionArgs = { idNote };
 
-        Cursor cursor = db.query(
+         Cursor cursor = db.query(
                 FeedReaderContract.FeedEntry.TABLE_NAME,        // The table to query
                 projection,                                     // The columns to return
                 selection,                                      // The columns for the WHERE clause
