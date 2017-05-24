@@ -6,12 +6,37 @@
     android:layout_height="match_parent"
     tools:context="ch.sario.mapeminder.OverviewActivity">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="224dp"
+        android:layout_height="28dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Meine Notizen"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/taNote"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <ListView
-        android:layout_width="344dp"
-        android:layout_height="495dp"
         android:id="@+id/notelist"
+        android:layout_width="359dp"
+        android:layout_height="492dp"
         android:layout_gravity="bottom"
-        tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp"></ListView>
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="63dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.365"
+        app:layout_constraintHorizontal_bias="0.466"></ListView>
 
 </android.support.constraint.ConstraintLayout>

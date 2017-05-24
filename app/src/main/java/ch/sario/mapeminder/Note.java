@@ -60,6 +60,43 @@ public class Note{
         return output;
     }
 
+    public ArrayList getNoteById(String idNote) {
+
+        ArrayList<String> output = new ArrayList<>();
+
+        String[] projection = {
+                FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS
+        };
+
+        String selection = FeedReaderContract.FeedEntry._ID + " = ?";
+        String[] selectionArgs = { idNote };
+
+        Cursor cursor = db.query(
+                FeedReaderContract.FeedEntry.TABLE_NAME,        // The table to query
+                projection,                                     // The columns to return
+                selection,                                      // The columns for the WHERE clause
+                selectionArgs,                                  // The values for the WHERE clause
+                null,                                           // don't group the rows
+                null,                                           // don't filter by row groups
+                null                                            // The sort order
+        );
+
+        String note = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE));
+        String xcoords = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS));
+        String ycoords = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_YCOORDS));
+
+        output.add(note);
+        output.add(xcoords);
+        output.add(ycoords);
+
+        cursor.close();
+
+        return output;
+
+    }
+
     public void closeNote(){
         mDbHelper.close();
     }
