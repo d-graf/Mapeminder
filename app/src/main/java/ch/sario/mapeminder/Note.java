@@ -53,7 +53,7 @@ public class Note{
             String id = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry._ID));
             String note = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE));
 
-            output.add(id + ": " + note);
+            output.add(id + ". " + note);
         }
         cursor.close();
 

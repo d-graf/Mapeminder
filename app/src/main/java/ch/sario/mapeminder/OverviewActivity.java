@@ -47,7 +47,7 @@ public class OverviewActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
 
                 String selectedFromList = (notes.getItemAtPosition(position).toString());
-                String[] selectedParts = selectedFromList.split(":");
+                String[] selectedParts = selectedFromList.split(".");
                 String selectedId = selectedParts[0];
 
 
