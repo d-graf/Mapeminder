@@ -29,6 +29,15 @@ public class Note{
         long newRowId = db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
     }
 
+    /*
+        note.createOpenDB(this);
+        note.deleteAllNotes();
+        note.closeNote();
+     */
+    public void deleteAllNotes(){
+        db.delete(FeedReaderContract.FeedEntry.TABLE_NAME, null, null);
+    }
+
     public ArrayList getAllNotes(){
 
         ArrayList<String> output = new ArrayList<>();
