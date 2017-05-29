@@ -3,11 +3,7 @@ package ch.sario.mapeminder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -33,10 +29,10 @@ public class DetailActivity extends AppCompatActivity {
         note.createOpenDB(this);
 
         ArrayList<String> output = note.getNoteById(idNote);
-
+/*
         txtNote.setText(output.get(0));
         txtXCoords.setText(output.get(1));
-        txtYCoords.setText(output.get(2));
+        txtYCoords.setText(output.get(2));*/
 
         note.closeNote();
 
