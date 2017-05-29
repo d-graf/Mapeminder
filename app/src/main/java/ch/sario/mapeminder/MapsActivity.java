@@ -1,6 +1,7 @@
 package ch.sario.mapeminder;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,12 +26,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.w3c.dom.Node;
+
+import java.util.ArrayList;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private LocationManager locationManager;
     private LocationListener listener;
     private Marker myMarker;
+    private Note note = new Note();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
+
     }
 
     @Override
@@ -68,11 +76,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onLocationChanged(Location location) {
                 if (myMarker == null) {
                     myMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Mein Standort"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(),15));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 15));
                 } else {
                     myMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(),15));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 15));
                 }
+                addNoteMarker();
             }
 
             @Override
@@ -120,9 +129,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private void clickOverview(){
+    private void clickOverview() {
         Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
         startActivity(intent);
+    }
+
+    private void addNoteMarker(){
+        note.createOpenDB(this);
+
+        ArrayList<String> output = note.getAllCoords();
+
+        for(int i = 0; i < output.size(); i++) {
+            String[] selectedParts = output.get(i).split(":");
+            String x = selectedParts[0];
+            String y = selectedParts[0];
+            Double CoordX = Double.parseDouble(x);
+            Double CoordY = Double.parseDouble(y);
+
+            System.out.println(output.get(i));
+
+            mMap.addMarker(new MarkerOptions().position(new LatLng(CoordX, CoordY)));
+        }
+        note.closeNote();
     }
 
 }

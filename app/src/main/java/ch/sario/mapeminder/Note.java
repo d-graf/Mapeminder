@@ -24,7 +24,7 @@ public class Note{
         ContentValues values = new ContentValues();
         values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE,str);
         values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS, x);
-        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS, y);
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_YCOORDS, y);
 
         long newRowId = db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
     }
