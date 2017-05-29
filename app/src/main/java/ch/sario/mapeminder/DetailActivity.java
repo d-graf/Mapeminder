@@ -25,6 +25,11 @@ public class DetailActivity extends AppCompatActivity {
         addNoteToTextView(idNote);
     }
 
+    protected void onLongClick(View v){
+
+
+    }
+
     private void addNoteToTextView(String idNote){
 
         note.createOpenDB(this);

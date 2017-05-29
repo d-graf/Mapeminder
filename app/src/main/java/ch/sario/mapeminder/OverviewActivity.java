@@ -3,11 +3,13 @@ package ch.sario.mapeminder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ public class OverviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_overview);
 
         notes = (ListView) findViewById(R.id.notelist);
+
 
         addNotesToList();
     }
@@ -77,7 +80,6 @@ public class OverviewActivity extends AppCompatActivity {
                 String[] selectedParts = selectedFromList.split(":");
                 String selectedId = selectedParts[0];
 
-
                 Toast.makeText(OverviewActivity.this, selectedId, Toast.LENGTH_SHORT).show();
 
                 intent.putExtra("id",selectedId);
@@ -85,6 +87,33 @@ public class OverviewActivity extends AppCompatActivity {
             }
         };
         notes.setOnItemClickListener(mListClickedHandler);
+
+        AdapterView.OnItemLongClickListener mOnItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView parent, View v, int position, long id) {
+                String selectedFromList = (notes.getItemAtPosition(position).toString());
+                String[] selectedParts = selectedFromList.split(":");
+                String selectedId = selectedParts[0];
+
+                deleteNote(selectedId);
+
+                Toast.makeText(OverviewActivity.this, "Notiz wurde gelöscht...", Toast.LENGTH_SHORT).show();
+                finish();
+                startActivity(getIntent());
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+                return true;
+            }
+        };
+        notes.setOnItemLongClickListener(mOnItemLongClickListener);
+
+    }
+    private boolean deleteNote(String idNote) {
+
+        note.createOpenDB(this);
+        note.deleteNoteById(idNote);
+        note.closeNote();
+
+        return true;
 
     }
 }
