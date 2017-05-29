@@ -57,7 +57,7 @@ public class OverviewActivity extends AppCompatActivity {
 
         for(Note note : allNotes) {
 
-            String noteText = note.getNote();
+            String noteText = note.getId() + ": " + note.getNote();
 
             if (noteText.length() > 45){
                 notelist.add(noteText.substring(0, 45) + "...");
@@ -75,7 +75,9 @@ public class OverviewActivity extends AppCompatActivity {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
 
-                String selectedId = Integer.toString(notes.getId());
+                String selectedFromList = (notes.getItemAtPosition(position).toString());
+                String[] selectedParts = selectedFromList.split(":");
+                String selectedId = selectedParts[0];
 
                 Toast.makeText(OverviewActivity.this, selectedId, Toast.LENGTH_SHORT).show();
 
