@@ -56,7 +56,13 @@ public class OverviewActivity extends AppCompatActivity {
         ArrayList<String> output = note.getAllNotes();
 
         for(int i = 0; i < output.size(); i++) {
-            notelist.add(output.get(i));
+            String str = output.get(i);
+            if (str.length() > 50){
+                notelist.add(str.substring(0, 45) + "...");
+            }else {
+                notelist.add(str);
+            }
+
         }
 
         note.closeNote();
