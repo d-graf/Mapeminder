@@ -74,7 +74,7 @@ public class OverviewActivity extends AppCompatActivity {
 
                 Toast.makeText(OverviewActivity.this, selectedId, Toast.LENGTH_SHORT).show();
 
-                intent.putExtra("id",id);
+                intent.putExtra("id",selectedId);
                 startActivity(intent);
             }
         };

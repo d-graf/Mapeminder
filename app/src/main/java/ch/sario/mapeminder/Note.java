@@ -70,13 +70,13 @@ public class Note{
         };
 
         String selection = FeedReaderContract.FeedEntry._ID + " = ?";
-        String[] selectionArgs = { idNote };
+        String[] selectionArgs = { "1" };
 
          Cursor cursor = db.query(
                 FeedReaderContract.FeedEntry.TABLE_NAME,        // The table to query
                 projection,                                     // The columns to return
                 selection,                                      // The columns for the WHERE clause
-                selectionArgs,                                  // The values for the WHERE clause
+                null ,                                  // The values for the WHERE clause
                 null,                                           // don't group the rows
                 null,                                           // don't filter by row groups
                 null                                            // The sort order
@@ -95,6 +95,56 @@ public class Note{
         return output;
 
     }
+
+    public ArrayList getAllCoords(){
+
+        ArrayList<String> output = new ArrayList<>();
+
+        String[] projection = {
+                FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_YCOORDS
+        };
+
+        Cursor cursor = db.query(
+                FeedReaderContract.FeedEntry.TABLE_NAME,        // The table to query
+                projection,                                     // The columns to return
+                null,                                           // The columns for the WHERE clause
+                null,                                           // The values for the WHERE clause
+                null,                                           // don't group the rows
+                null,                                           // don't filter by row groups
+                null                                            // The sort order
+        );
+
+        while(cursor.moveToNext()) {
+            String x = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS));
+            String y = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_YCOORDS));
+
+            output.add(x + ":" + y);
+        }
+        cursor.close();
+
+        return output;
+    }
+
+    /**
+     *
+     *
+     * notelist = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+       note.createOpenDB(this);
+       ArrayList<String> output = note.getAllCoords();
+
+       for(int i = 0; i < output.size(); i++) {
+         String[] selectedParts = output.split(":");
+         String x = selectedParts[0];
+         String y = selectedParts[0];
+         addMarker(x,y);
+     }
+
+     note.closeNote();
+     *
+     */
+
+
 
     public void closeNote(){
         mDbHelper.close();
