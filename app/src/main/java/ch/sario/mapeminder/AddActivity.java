@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 public class AddActivity extends AppCompatActivity {
 
-    private Note note = new Note();
+    private NoteContract noteContract = new NoteContract();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +66,9 @@ public class AddActivity extends AppCompatActivity {
         EditText noteTxt = (EditText) findViewById(R.id.taNote);
         String str = noteTxt.getText().toString();
 
-        note.createOpenDB(this);
-        note.insertNote(str, x, y);
-        note.closeNote();
+        noteContract.createOpenDB(this);
+        noteContract.insertNote(str, x, y);
+        noteContract.closeNote();
 
         goToMap();
     }

@@ -17,7 +17,7 @@ public class OverviewActivity extends AppCompatActivity {
 
     ArrayAdapter notelist;
     private ListView notes;
-    private Note note = new Note();
+    private NoteContract noteContract = new NoteContract();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +25,12 @@ public class OverviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_overview);
 
         notes = (ListView) findViewById(R.id.notelist);
-
         addNotesToList();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu_home) {
         getMenuInflater().inflate(R.menu.menu_home, menu_home);
-
         return true;
     }
 
@@ -52,20 +50,22 @@ public class OverviewActivity extends AppCompatActivity {
 
         notelist = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 
-        note.createOpenDB(this);
-        ArrayList<String> output = note.getAllNotes();
+        noteContract.createOpenDB(this);
+        ArrayList<Note> allNotes = noteContract.getAllNotes();
 
-        for(int i = 0; i < output.size(); i++) {
-            String str = output.get(i);
-            if (str.length() > 50){
-                notelist.add(str.substring(0, 45) + "...");
+        for(Note note : allNotes) {
+
+            String noteText = note.getNote();
+
+            if (noteText.length() > 45){
+                notelist.add(noteText.substring(0, 45) + "...");
             }else {
-                notelist.add(str);
+                notelist.add(noteText);
             }
 
         }
 
-        note.closeNote();
+        noteContract.closeNote();
 
         notes.setAdapter(notelist);
 
@@ -73,11 +73,8 @@ public class OverviewActivity extends AppCompatActivity {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
 
-                String selectedFromList = (notes.getItemAtPosition(position).toString());
-                String[] selectedParts = selectedFromList.split(":");
-                String selectedId = selectedParts[0];
-
-
+                String selectedId = Integer.toString(notes.getId());
+                
                 Toast.makeText(OverviewActivity.this, selectedId, Toast.LENGTH_SHORT).show();
 
                 intent.putExtra("id",selectedId);

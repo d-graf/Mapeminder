@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -39,8 +40,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationManager locationManager;
     private LocationListener listener;
     private Marker myMarker;
-    private Note note = new Note();
+    private Marker locationMarker;
+    private NoteContract noteContract = new NoteContract();
     ArrayList<Circle> circlePoint = new ArrayList<>();
+    TreeMap<String, Note> markerNotes = new TreeMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,16 +76,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 if (myMarker == null) {
                     myMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Mein Standort"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 15));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 14));
                 } else {
                     myMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 15));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 14));
                 }
 
                 circlePoint.clear();
@@ -135,19 +137,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             return;
         }
-        locationManager.requestLocationUpdates("gps", 5000, 0, listener);
+        locationManager.requestLocationUpdates("gps", 20000, 0, listener);
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
 
-                System.out.println(point.longitude);
-                System.out.println(point.latitude);
-
                 Intent intent = new Intent(getApplicationContext(), AddActivity.class);
                 intent.putExtra("x", Double.toString(point.longitude));
                 intent.putExtra("y", Double.toString(point.latitude));
                 startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            }
+        });
+
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker locationMarker) {
+
+                if (markerNotes.containsKey(locationMarker.getId())) {
+                    Note note = markerNotes.get(locationMarker.getId());
+
+
+                    Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+
+                    intent.putExtra("id", note.getId());
+                    startActivity(intent);
+                }
+
+
+                return true;
             }
         });
     }
@@ -158,20 +177,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void addNoteMarker(){
-        note.createOpenDB(this);
+        noteContract.createOpenDB(this);
 
-        ArrayList<String> output = note.getAllCoords();
+        ArrayList<Note> notes = noteContract.getAllNotes();
 
-        for(int i = 0; i < output.size(); i++) {
-            String[] selectedParts = output.get(i).split(":");
-            String x = selectedParts[0];
-            String y = selectedParts[1];
-            Double CoordX = Double.parseDouble(x);
-            Double CoordY = Double.parseDouble(y);
+        for(int i = 0; i < notes.size(); i++) {
 
-            int countNote = i + 1;
+            Note note = notes.get(i);
 
-            mMap.addMarker(new MarkerOptions().position(new LatLng(CoordY, CoordX)).icon(getMarkerIcon("#088A29")).title("Notiz: " + countNote));
+            Double CoordX = Double.parseDouble(note.getLongitude());
+            Double CoordY = Double.parseDouble(note.getLatitude());
+
+
+            locationMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(CoordY, CoordX)).icon(getMarkerIcon("#088A29")).title("Notiz: " + note.getId()));
+            markerNotes.put(locationMarker.getId(), note);
 
             circlePoint.add(mMap.addCircle(new CircleOptions()
                     .center(new LatLng(CoordY, CoordX))
@@ -180,7 +199,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             )
             );
         }
-        note.closeNote();
+        noteContract.closeNote();
     }
 
     private BitmapDescriptor getMarkerIcon(String color) {
