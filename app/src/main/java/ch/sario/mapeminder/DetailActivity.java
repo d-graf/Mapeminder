@@ -3,11 +3,7 @@ package ch.sario.mapeminder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -21,9 +17,8 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Intent intent = new Intent();
+        Intent intent = getIntent();
         String idNote = intent.getStringExtra("id");
-
         addNoteToTextView(idNote);
     }
 
@@ -34,9 +29,14 @@ public class DetailActivity extends AppCompatActivity {
 
         ArrayList<String> output = note.getNoteById(idNote);
 
-        txtNote.setText(output.get(0));
-        txtXCoords.setText(output.get(1));
-        txtYCoords.setText(output.get(2));
+        TextView xCoords = (TextView) findViewById(R.id.txtXCoords);
+        xCoords.setText("x: " + output.get(0));
+
+        TextView yCoords = (TextView) findViewById(R.id.txtYCoords);
+        yCoords.setText("y: " +  output.get(1));
+
+        TextView noteBox = (TextView) findViewById(R.id.txtNote);
+        noteBox.setText(output.get(2));
 
         note.closeNote();
 
