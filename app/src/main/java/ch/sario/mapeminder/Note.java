@@ -29,6 +29,11 @@ public class Note{
         long newRowId = db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
     }
 
+    public void deleteNoteById(String idNote){
+        String selection = FeedReaderContract.FeedEntry._ID + " = ?";
+        String[] selectionArgs = { idNote };
+        db.delete(FeedReaderContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
+    }
 
     public void deleteAllNotes(){
         db.delete(FeedReaderContract.FeedEntry.TABLE_NAME, null, null);
