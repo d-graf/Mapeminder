@@ -17,9 +17,8 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Intent intent = new Intent();
+        Intent intent = getIntent();
         String idNote = intent.getStringExtra("id");
-
         addNoteToTextView(idNote);
     }
 
@@ -29,10 +28,15 @@ public class DetailActivity extends AppCompatActivity {
         note.createOpenDB(this);
 
         ArrayList<String> output = note.getNoteById(idNote);
-/*
-        txtNote.setText(output.get(0));
-        txtXCoords.setText(output.get(1));
-        txtYCoords.setText(output.get(2));*/
+
+        TextView xCoords = (TextView) findViewById(R.id.txtXCoords);
+        xCoords.setText("x: " + output.get(0));
+
+        TextView yCoords = (TextView) findViewById(R.id.txtYCoords);
+        yCoords.setText("y: " +  output.get(1));
+
+        TextView noteBox = (TextView) findViewById(R.id.txtNote);
+        noteBox.setText(output.get(2));
 
         note.closeNote();
 

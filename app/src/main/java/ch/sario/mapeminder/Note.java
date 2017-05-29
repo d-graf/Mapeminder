@@ -69,31 +69,33 @@ public class Note{
         ArrayList<String> output = new ArrayList<>();
 
         String[] projection = {
-                FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE,
+                FeedReaderContract.FeedEntry._ID,
                 FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS,
-                FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS
+                FeedReaderContract.FeedEntry.COLUMN_NAME_YCOORDS,
+                FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE
         };
 
         String selection = FeedReaderContract.FeedEntry._ID + " = ?";
-        String[] selectionArgs = { "1" };
+        String[] selectionArgs = { idNote };
 
-         Cursor cursor = db.query(
+        Cursor cursor = db.query(
                 FeedReaderContract.FeedEntry.TABLE_NAME,        // The table to query
                 projection,                                     // The columns to return
-                selection,                                      // The columns for the WHERE clause
-                null ,                                  // The values for the WHERE clause
+                selection,                                           // The columns for the WHERE clause
+                selectionArgs,                                           // The values for the WHERE clause
                 null,                                           // don't group the rows
                 null,                                           // don't filter by row groups
                 null                                            // The sort order
         );
 
+        cursor.moveToFirst();
+        String x = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS));
+        String y = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_YCOORDS));
         String note = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE));
-        String xcoords = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS));
-        String ycoords = cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_YCOORDS));
 
+        output.add(x);
+        output.add(y);
         output.add(note);
-        output.add(xcoords);
-        output.add(ycoords);
 
         cursor.close();
 
@@ -130,26 +132,6 @@ public class Note{
 
         return output;
     }
-
-    /**
-     *
-     *
-     * notelist = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
-       note.createOpenDB(this);
-       ArrayList<String> output = note.getAllCoords();
-
-       for(int i = 0; i < output.size(); i++) {
-         String[] selectedParts = output.split(":");
-         String x = selectedParts[0];
-         String y = selectedParts[0];
-         addMarker(x,y);
-     }
-
-     note.closeNote();
-     *
-     */
-
-
 
     public void closeNote(){
         mDbHelper.close();
