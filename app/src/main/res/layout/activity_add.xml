@@ -33,13 +33,14 @@
         android:ems="10"
         android:gravity="top"
         android:hint="Notiz:"
-        android:inputType="textPersonName"
         android:padding="4dp"
+        android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.529"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:scrollHorizontally="true"
         app:layout_constraintVertical_bias="0.2" />
 
     <TextView
