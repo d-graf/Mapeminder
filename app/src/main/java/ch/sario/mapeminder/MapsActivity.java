@@ -44,6 +44,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NoteContract noteContract = new NoteContract();
     ArrayList<Circle> circlePoint = new ArrayList<>();
     TreeMap<String, Note> markerNotes = new TreeMap<>();
+    private Circle circles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +82,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onLocationChanged(Location location) {
                 if (myMarker == null) {
                     myMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Mein Standort"));
+                    circles = mMap.addCircle(new CircleOptions()
+                                    .center(new LatLng(location.getLatitude(), location.getLongitude()))
+                                    .radius(500)
+                                    .strokeColor(Color.BLACK)
+                                    .fillColor(Color.argb(50,137,250,114))
+                            );
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 14));
                 } else {
                     myMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+                    circles.setCenter(new LatLng(location.getLatitude(), location.getLongitude()));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 14));
                 }
 
