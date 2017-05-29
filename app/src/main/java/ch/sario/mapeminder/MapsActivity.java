@@ -1,6 +1,8 @@
 package ch.sario.mapeminder;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +14,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -28,6 +31,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -44,6 +49,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationListener listener;
     private Marker myMarker;
     private Note note = new Note();
+    ArrayList<Circle> circlePoint = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +94,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 15));
                 }
 
+                circlePoint.clear();
+
                 addNoteMarker();
+
+                for (int i = 0; i < circlePoint.size(); i++) {
+                    Circle circle = circlePoint.get(i);
+
+                    float[] distance = new float[2];
+
+                    double pLong = location.getLongitude();
+                    double pLat = location.getLatitude();
+
+                    Location.distanceBetween(pLat, pLong, circle.getCenter().latitude, circle.getCenter().longitude, distance);
+
+                    if(distance[0] > circle.getRadius()){
+                        return;
+                    } else {
+                        callNotification(i);
+                    }
+                }
             }
 
             @Override
@@ -153,7 +178,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Double CoordX = Double.parseDouble(x);
             Double CoordY = Double.parseDouble(y);
 
-            mMap.addMarker(new MarkerOptions().position(new LatLng(CoordY, CoordX)).icon(getMarkerIcon("#088A29")));
+            int countNote = i + 1;
+
+            mMap.addMarker(new MarkerOptions().position(new LatLng(CoordY, CoordX)).icon(getMarkerIcon("#088A29")).title("Notiz: " + countNote));
+
+            circlePoint.add(mMap.addCircle(new CircleOptions()
+                    .center(new LatLng(CoordY, CoordX))
+                    .radius(500)
+                    .strokeColor(Color.TRANSPARENT)
+            )
+            );
         }
         note.closeNote();
     }
@@ -162,5 +196,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         float[] hsv = new float[3];
         Color.colorToHSV(Color.parseColor(color), hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    }
+
+    private void callNotification(int countNote){
+
+        int countNotes = countNote + 1;
+
+        Intent intent = new Intent();
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        Notification noti = new Notification.Builder(this)
+                .setTicker("Notiz in Reichweite")
+                .setContentTitle("Notiz: " + countNotes + " in Reichweite")
+                .setContentText("Notiz: " + countNotes + " in Reichweite")
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentIntent(pIntent).getNotification();
+        noti.flags =Notification.FLAG_AUTO_CANCEL;
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, noti);
     }
 }
