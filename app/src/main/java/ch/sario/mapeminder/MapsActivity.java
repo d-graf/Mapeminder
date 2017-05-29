@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,15 +14,20 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.widget.TextView;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -29,6 +35,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
+import java.util.logging.Handler;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -48,7 +55,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
-
     }
 
     @Override
@@ -81,6 +87,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     myMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 15));
                 }
+
                 addNoteMarker();
             }
 
@@ -142,15 +149,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         for(int i = 0; i < output.size(); i++) {
             String[] selectedParts = output.get(i).split(":");
             String x = selectedParts[0];
-            String y = selectedParts[0];
+            String y = selectedParts[1];
             Double CoordX = Double.parseDouble(x);
             Double CoordY = Double.parseDouble(y);
 
-            System.out.println(output.get(i));
-
-            mMap.addMarker(new MarkerOptions().position(new LatLng(CoordX, CoordY)));
+            mMap.addMarker(new MarkerOptions().position(new LatLng(CoordY, CoordX)).icon(getMarkerIcon("#088A29")));
         }
         note.closeNote();
     }
 
+    private BitmapDescriptor getMarkerIcon(String color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(Color.parseColor(color), hsv);
+        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    }
 }
