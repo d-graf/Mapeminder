@@ -106,7 +106,11 @@ public class NoteContract {
         return noteData;
 
     }
-
+    public void deleteNoteById(String idNote){
+        String selection = FeedReaderContract.FeedEntry._ID + " = ?";
+        String[] selectionArgs = { idNote };
+        db.delete(FeedReaderContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
+    }
 
 
     public void closeNote(){

@@ -5,9 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -19,7 +18,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         Intent intent = getIntent();
-        String idNote = intent.getStringExtra("id");
+        final String idNote = intent.getStringExtra("id");
         addNoteToTextView(idNote);
     }
 
@@ -43,7 +42,6 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void addNoteToTextView(String idNote){
-
 
         noteContract.createOpenDB(this);
 
