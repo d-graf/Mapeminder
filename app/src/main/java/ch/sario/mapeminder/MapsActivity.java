@@ -15,6 +15,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    private final static int REQUEST_CODE_ADD_MARKER = 1;
 
     private GoogleMap mMap;
     private LocationManager locationManager;
@@ -75,6 +78,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        loadNoteMarkers();
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         listener = new LocationListener() {
@@ -95,24 +100,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myMarker.getPosition(), 14));
                 }
 
-                circlePoint.clear();
+                int counter = 0;
 
-                addNoteMarker();
-
+                Log.e("App", "gis" + circlePoint.size());
                 for (int i = 0; i < circlePoint.size(); i++) {
                     Circle circle = circlePoint.get(i);
 
-                    float[] distance = new float[2];
 
-                    double pLong = location.getLongitude();
-                    double pLat = location.getLatitude();
+                    Location circleLocation = new Location("Circle Location");
 
-                    Location.distanceBetween(pLat, pLong, circle.getCenter().latitude, circle.getCenter().longitude, distance);
+                    circleLocation.setLatitude(circle.getCenter().latitude);
+                    circleLocation.setLongitude(circle.getCenter().longitude);
 
-                    if(distance[0] > circle.getRadius()){
-                        return;
-                    } else {
-                        callNotification(i);
+
+                    float distance = location.distanceTo(circleLocation);
+
+                    Log.e("App", "dis" + Float.toString(distance) + " < " + circle.getRadius());
+                    Log.e("App", (circle.getCenter().latitude + "    " + circle.getCenter().longitude));
+
+                    if(distance < circle.getRadius()) {
+                        counter++;
+                        callNotification(counter);
                     }
                 }
             }
@@ -145,16 +153,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             return;
         }
-        locationManager.requestLocationUpdates("gps", 20000, 0, listener);
+        locationManager.requestLocationUpdates("gps", 15000, 0, listener);
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
 
                 Intent intent = new Intent(getApplicationContext(), AddActivity.class);
-                intent.putExtra("x", Double.toString(point.longitude));
-                intent.putExtra("y", Double.toString(point.latitude));
-                startActivity(intent);
+                intent.putExtra("x", point.longitude);
+                intent.putExtra("y", point.latitude);
+                startActivityForResult(intent, REQUEST_CODE_ADD_MARKER);
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
@@ -171,6 +179,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     intent.putExtra("id", note.getId());
                     startActivity(intent);
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 }
 
 
@@ -178,13 +187,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == REQUEST_CODE_ADD_MARKER) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                addNoteMarker(data.getDoubleExtra("x", 0.0), data.getDoubleExtra("y", 0.0));
+            }
+        }
+    }
 
     private void clickOverview() {
         Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
         startActivity(intent);
     }
 
-    private void addNoteMarker(){
+    private void loadNoteMarkers() {
         noteContract.createOpenDB(this);
 
         ArrayList<Note> notes = noteContract.getAllNotes();
@@ -201,13 +220,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             markerNotes.put(locationMarker.getId(), note);
 
             circlePoint.add(mMap.addCircle(new CircleOptions()
-                    .center(new LatLng(CoordY, CoordX))
-                    .radius(500)
-                    .strokeColor(Color.TRANSPARENT)
-            )
+                            .center(new LatLng(CoordY, CoordX))
+                            .radius(500)
+                            .strokeColor(Color.TRANSPARENT)
+                    )
             );
         }
         noteContract.closeNote();
+    }
+
+    public void addNoteMarker(double CoordY, double CoordX){
+        circlePoint.add(mMap.addCircle(new CircleOptions()
+                        .center(new LatLng(CoordY, CoordX))
+                        .radius(500)
+                        .strokeColor(Color.TRANSPARENT)
+                )
+        );
     }
 
     private BitmapDescriptor getMarkerIcon(String color) {
@@ -216,16 +244,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
-    private void callNotification(int countNote){
-
-        int countNotes = countNote + 1;
-
+    private void callNotification(int counter){
         Intent intent = new Intent();
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
         Notification noti = new Notification.Builder(this)
-                .setTicker("Notiz in Reichweite")
-                .setContentTitle("Notiz: " + countNotes + " in Reichweite")
-                .setContentText("Notiz: " + countNotes + " in Reichweite")
+                .setTicker("Notizen sind in Reichweite")
+                .setContentTitle("Notizen sind in Reichweite")
+                .setContentText("Notiz/en in Reichweite")
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentIntent(pIntent).getNotification();
         noti.flags =Notification.FLAG_AUTO_CANCEL;

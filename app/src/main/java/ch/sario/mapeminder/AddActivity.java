@@ -1,6 +1,7 @@
 package ch.sario.mapeminder;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,7 +12,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+
 public class AddActivity extends AppCompatActivity {
+
+    private Double x, y;
 
     private NoteContract noteContract = new NoteContract();
 
@@ -28,14 +34,15 @@ public class AddActivity extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        String x = intent.getStringExtra("x");
-        String y = intent.getStringExtra("y");
+        Double x = intent.getDoubleExtra("x", 0.0);
+        Double y = intent.getDoubleExtra("y", 0.0);
 
         TextView tx = (TextView) findViewById(R.id.longitudeX);
         tx.setText("x: " + x);
 
         TextView ty = (TextView) findViewById(R.id.latitudeY);
         ty.setText("y: " + y);
+
 
     }
 
@@ -60,14 +67,14 @@ public class AddActivity extends AppCompatActivity {
 
     private void saveNote(){
         Intent intent = getIntent();
-        String x = intent.getStringExtra("x");
-        String y = intent.getStringExtra("y");
+        x = intent.getDoubleExtra("x", 0.0);
+        y = intent.getDoubleExtra("y", 0.0);
 
         EditText noteTxt = (EditText) findViewById(R.id.taNote);
         String str = noteTxt.getText().toString();
 
         noteContract.createOpenDB(this);
-        noteContract.insertNote(str, x, y);
+        noteContract.insertNote(str, Double.toString(x), Double.toString(y));
         noteContract.closeNote();
 
         goToMap();
@@ -76,6 +83,9 @@ public class AddActivity extends AppCompatActivity {
     private void goToMap(){
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         Toast.makeText(AddActivity.this, "Notiz gespeichert...", Toast.LENGTH_SHORT).show();
+        intent.putExtra("x", x);
+        intent.putExtra("y", y);
+        setResult(RESULT_OK, intent);
         startActivity(intent);
     }
 
