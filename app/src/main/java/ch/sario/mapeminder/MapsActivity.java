@@ -97,7 +97,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * On map ready locate the user's position and set a marker.
-     * Check all marker if one in radius and callNotification().
+     * Check all marker if one is in radius, callNotification().
      * All 20000ms the listener refresh.
      * @param googleMap, Map.
      */
@@ -214,6 +214,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
+    /**
+     * Check in the AddActivity if save button was clicked and return result.
+     * Call function addNoteMarker() if save button was clicked.
+     * @param requestCode, code to addactivity.
+     * @param resultCode, code from addactivity
+     * @param data, intent.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
@@ -226,7 +234,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Select all notes from db and set a marker with a cycle.
+     * Select all notes from db and set marker on map.
      */
     private void loadNoteMarkers() {
         noteContract.createOpenDB(this);
@@ -254,6 +262,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         noteContract.closeNote();
     }
 
+    /**
+     * Add a marker on map.
+     * @param CoordY, Y Coord from new marker
+     * @param CoordX, X Coord from new marker
+     */
     public void addNoteMarker(double CoordY, double CoordX){
         circlePoint.add(mMap.addCircle(new CircleOptions()
                         .center(new LatLng(CoordY, CoordX))
