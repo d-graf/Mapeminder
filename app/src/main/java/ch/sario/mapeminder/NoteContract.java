@@ -7,12 +7,22 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
+/**
+ * All db functions to insert, select and delete data from the db.
+ *
+ * @version 1.0
+ */
+
 public class NoteContract {
 
     private SQLiteDatabase db;
     FeedReaderContract.FeedReaderDbHelper mDbHelper;
 
-    /*Check if db exists*/
+    /**
+     * Check with the DBHelper if db exists and open it or
+     * create the db.
+     * @param activity, the current activity which the method called.
+     */
     public void createOpenDB(Activity activity) {
 
         mDbHelper = new FeedReaderContract.FeedReaderDbHelper(activity.getApplicationContext());
@@ -20,21 +30,32 @@ public class NoteContract {
 
     }
 
-    /*Insert Content in db*/
-    public void insertNote(String str, String x, String y){
+    /**
+     * Insert data with the note object in db.
+     * @param note, store content for column note, xcoords and ycoords.
+     */
+    public void insertNote(Note note){
 
         ContentValues values = new ContentValues();
-        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE,str);
-        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS, x);
-        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_YCOORDS, y);
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_NOTE,note.getNote());
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_XCOORDS, note.getLongitude());
+        values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_YCOORDS, note.getLatitude());
          /*Inserts Values */
         db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, values);
     }
 
+    /**
+     * Developer function to delete all notes at once.
+     */
     public void deleteAllNotes(){
         db.delete(FeedReaderContract.FeedEntry.TABLE_NAME, null, null);
     }
 
+
+    /**
+     * Read and show all notes from db.
+     * @return note, ArrayList to handle data.
+     */
     public ArrayList<Note> getAllNotes(){
 
         ArrayList<Note> notes = new ArrayList<>();
@@ -71,6 +92,11 @@ public class NoteContract {
         return notes;
     }
 
+    /**
+     * Read and show note by an specific id.
+     * @param idNote, unique id of a note to get one data row.
+     * @return noteData, note object to handle the data.
+     */
     public Note getNoteById(String idNote) {
 
         String[] projection = {
@@ -106,13 +132,20 @@ public class NoteContract {
         return noteData;
 
     }
+
+    /**
+     * Delete a specific note from db selected by id.
+     * @param idNote, unique id.
+     */
     public void deleteNoteById(String idNote){
         String selection = FeedReaderContract.FeedEntry._ID + " = ?";
         String[] selectionArgs = { idNote };
         db.delete(FeedReaderContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
     }
 
-
+    /**
+     * Close db connection.
+     */
     public void closeNote(){
         mDbHelper.close();
     }

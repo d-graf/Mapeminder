@@ -1,15 +1,30 @@
 package ch.sario.mapeminder;
 
 /**
- * Created by bgrafd on 29.05.2017.
+ * Note Object, store all information.
+ *
+ * @version 1.0
  */
-
 public class Note {
 
+    /**
+     * a unique id.
+     */
     private String id;
+    /**
+     * Y Coordinates, String because db.
+     */
     private String latitude;
+
+    /**
+     * X Coordinates, String because db.
+     */
     private String longitude;
+    /**
+     *  content of note.
+     */
     private String note;
+
 
     public Note(String id, String latitude, String longitude, String note) {
         this.id = id;
@@ -39,7 +54,6 @@ public class Note {
     public String getLongitude() {
         return longitude;
     }
-
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
