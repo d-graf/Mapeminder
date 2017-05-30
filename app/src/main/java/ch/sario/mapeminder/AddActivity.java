@@ -12,8 +12,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
+/**
+ * Activity to add a note.
+ *
+ * @version 1.0
+ */
 
 public class AddActivity extends AppCompatActivity {
 
@@ -42,44 +45,62 @@ public class AddActivity extends AppCompatActivity {
 
         TextView ty = (TextView) findViewById(R.id.latitudeY);
         ty.setText("y: " + y);
-
-
     }
 
+    /**
+     * integrate the menu menu_home.xml
+     * @param menu_home, menu xml to go back.
+     * @return true.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu_home) {
         getMenuInflater().inflate(R.menu.menu_home, menu_home);
-
         return true;
     }
 
+    /**
+     * on item click call clickMaps()
+     * @param item, item of the menu in the right corner.
+     * @return true.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         clickMaps();
         return true;
     }
 
+    /**
+     * Go back to the MapsActivity with a fade animation.
+     */
     private void clickMaps(){
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
+    /**
+     * instantiate a note and call insert function from
+     * NoteContract.
+     */
     private void saveNote(){
         Intent intent = getIntent();
         x = intent.getDoubleExtra("x", 0.0);
         y = intent.getDoubleExtra("y", 0.0);
 
         EditText noteTxt = (EditText) findViewById(R.id.taNote);
-        String str = noteTxt.getText().toString();
+        String note = noteTxt.getText().toString();
 
+        Note noteData = new Note(Double.toString(y), Double.toString(x), note);
         noteContract.createOpenDB(this);
-        noteContract.insertNote(str, Double.toString(x), Double.toString(y));
+        noteContract.insertNote(noteData);
         noteContract.closeNote();
 
         goToMap();
     }
 
+    /**
+     *  Go back to the MapsActivity and send a toast.
+     */
     private void goToMap(){
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         Toast.makeText(AddActivity.this, "Notiz gespeichert...", Toast.LENGTH_SHORT).show();
@@ -88,6 +109,4 @@ public class AddActivity extends AppCompatActivity {
         setResult(RESULT_OK, intent);
         startActivity(intent);
     }
-
-
 }

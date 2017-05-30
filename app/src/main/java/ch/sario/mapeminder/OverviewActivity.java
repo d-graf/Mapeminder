@@ -3,22 +3,31 @@ package ch.sario.mapeminder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
+/**
+ * Activity to show one specific note.
+ *
+ * @version 1.0
+ */
 public class OverviewActivity extends AppCompatActivity {
 
     ArrayAdapter notelist;
+    /**
+     * List all row from db.
+     */
     private ListView notes;
+    /**
+     * instantiate NoteContract to handle db functions.
+     */
     private NoteContract noteContract = new NoteContract();
 
     @Override
@@ -30,24 +39,54 @@ public class OverviewActivity extends AppCompatActivity {
         addNotesToList();
     }
 
+    /**
+     * integrate the menu menu_home.xml
+     * @param menu_home, menu xml to go back.
+     * @return true.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu_home) {
         getMenuInflater().inflate(R.menu.menu_home, menu_home);
         return true;
     }
 
+    /**
+     * on item click call clickMaps().
+     * @param item, item of the menu in the right corner.
+     * @return true.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         clickMaps();
         return true;
     }
 
+    /**
+     * Go back to the MapsActivity with a fade animation.
+     */
     private void clickMaps(){
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
+    /**
+     * Delete a note by an specific id.
+     * @param idNote, unique id.
+     * @return true.
+     */
+    private boolean deleteNote(String idNote) {
+        noteContract.createOpenDB(this);
+        noteContract.deleteNoteById(idNote);
+        noteContract.closeNote();
+
+        return true;
+    }
+
+    /**
+     * Select all notes from db and add per row a new listitem.
+     * On long click the item will be deleted.
+     */
     private void addNotesToList(){
 
         notelist = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
@@ -64,7 +103,6 @@ public class OverviewActivity extends AppCompatActivity {
             }else {
                 notelist.add(noteText);
             }
-
         }
 
         noteContract.closeNote();
@@ -104,15 +142,5 @@ public class OverviewActivity extends AppCompatActivity {
             }
         };
         notes.setOnItemLongClickListener(mOnItemLongClickListener);
-
-    }
-    private boolean deleteNote(String idNote) {
-
-        noteContract.createOpenDB(this);
-        noteContract.deleteNoteById(idNote);
-        noteContract.closeNote();
-
-        return true;
-
     }
 }

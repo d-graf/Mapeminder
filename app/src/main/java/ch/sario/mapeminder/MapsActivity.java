@@ -31,10 +31,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+/**
+ * Activity to load Map and all markers and cycles.
+ *
+ * @version 1.0
+ */
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private final static int REQUEST_CODE_ADD_MARKER = 1;
@@ -61,19 +65,42 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
     }
 
+    /**
+     * integrate the menu menu.xml.
+     * @param menu, menu xml to go to overview.
+     * @return true.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
 
         return true;
     }
-
+    /**
+     * on item click call clickOverview().
+     * @param item, item of the menu in the right corner.
+     * @return true.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         clickOverview();
         return true;
     }
 
+    /**
+     * Go to the OverviewActivity.
+     */
+    private void clickOverview() {
+        Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * On map ready locate the user's position and set a marker.
+     * Check all marker if one in radius and callNotification().
+     * All 20000ms the listener refresh.
+     * @param googleMap, Map.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -198,11 +225,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void clickOverview() {
-        Intent intent = new Intent(getApplicationContext(), OverviewActivity.class);
-        startActivity(intent);
-    }
-
+    /**
+     * Select all notes from db and set a marker with a cycle.
+     */
     private void loadNoteMarkers() {
         noteContract.createOpenDB(this);
 
@@ -238,12 +263,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         );
     }
 
+    /**
+     * function to change the color of a marker with hex color.
+     * @param color, hex color code, #088A29.
+     */
     private BitmapDescriptor getMarkerIcon(String color) {
         float[] hsv = new float[3];
         Color.colorToHSV(Color.parseColor(color), hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
+    /**
+     * send a notification with the note which is in reach.
+     * @param counter, current note.
+     */
     private void callNotification(int counter){
         Intent intent = new Intent();
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
