@@ -5,8 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -18,8 +16,8 @@ public class LoadingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
-        if (!isLocationEnabled() && !isNetworkAvailable()){
-            mDialog = ProgressDialog.show(this, "Keine Internetverbindung / GPS", "Bitte aktivieren...");
+        if (!isLocationEnabled()){
+            mDialog = ProgressDialog.show(this, "GPS nicht aktiviert", "Bitte aktivieren und neustarten...");
         }else{
             procceedToNextActivity();
         }
@@ -45,12 +43,6 @@ public class LoadingActivity extends AppCompatActivity {
         });
 
         thread.start();
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     protected boolean isLocationEnabled(){
